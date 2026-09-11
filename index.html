@@ -3,174 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kollabilen.se - AI Bilrapport</title>
+    <title>kollabilen.se - Bilhistorik & Besiktning</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
         }
-
-        body {
-            background-color: #0b1329;
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 70%);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+        body { 
+            background-color: #0b1329; 
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 70%); 
+            color: #ffffff; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
         }
-
-        .header-tag {
-            background: #ffffff;
-            color: #000000;
-            padding: 6px 16px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 2px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        .header-tag { 
+            background: #ffffff; 
+            color: #000000; 
+            padding: 6px 16px; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            font-size: 18px; 
+            letter-spacing: 2px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-bottom: 24px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
         }
-
-        .header-tag span {
-            background: #0052b4;
-            color: #ffffff;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
+        .header-tag span { 
+            background: #0052b4; 
+            color: #ffffff; 
+            padding: 2px 6px; 
+            border-radius: 3px; 
+            font-size: 12px; 
         }
-
-        .container {
-            width: 100%;
-            max-width: 440px;
-            text-align: center;
+        .container { 
+            width: 100%; 
+            max-width: 440px; 
+            text-align: center; 
         }
-
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: #ffffff;
+        h1 { 
+            font-size: 32px; 
+            font-weight: 800; 
+            margin-bottom: 12px; 
+            color: #ffffff; 
         }
-
-        p.subtitle {
-            color: #94a3b8;
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 32px;
+        p.subtitle { 
+            color: #94a3b8; 
+            font-size: 15px; 
+            line-height: 1.5; 
+            margin-bottom: 32px; 
         }
-
-        .card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            text-align: left;
+        .card { 
+            background: rgba(30, 41, 59, 0.7); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(12px); 
+            border-radius: 20px; 
+            padding: 28px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            text-align: left; 
         }
-
-        .form-group {
-            margin-bottom: 20px;
+        .form-group { 
+            margin-bottom: 20px; 
         }
-
-        label {
-            display: block;
-            font-size: 13px;
-            color: #cbd5e1;
-            margin-bottom: 8px;
-            font-weight: 500;
+        label { 
+            display: block; 
+            font-size: 13px; 
+            color: #cbd5e1; 
+            margin-bottom: 8px; 
+            font-weight: 500; 
         }
-
-        input, select {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid #334155;
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 15px;
-            outline: none;
+        input { 
+            width: 100%; 
+            padding: 14px 16px; 
+            background: rgba(15, 23, 42, 0.8); 
+            border: 1px solid #334155; 
+            border-radius: 10px; 
+            color: #ffffff; 
+            font-size: 18px; 
+            font-weight: 700;
+            outline: none; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
             transition: border-color 0.2s;
         }
-
-        input:focus, select:focus {
-            border-color: #38bdf8;
+        input:focus { 
+            border-color: #38bdf8; 
         }
-
-        button {
-            width: 100%;
-            padding: 16px;
-            background: #0070f3;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            margin-top: 8px;
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: #0070f3; 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: background 0.2s, transform 0.1s; 
         }
-
-        button:hover {
-            background: #0051a8;
+        button:hover { 
+            background: #0051a8; 
         }
-
-        button:active {
-            transform: scale(0.98);
+        button:active { 
+            transform: scale(0.98); 
         }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        #result {
-            margin-top: 24px;
-        }
-
-        .report {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 20px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #e2e8f0;
-        }
-
-        .footer-note {
-            margin-top: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 14px;
-            font-size: 13px;
-            color: #cbd5e1;
-            text-align: center;
-        }
-
-        .disclaimer-note {
-            margin-top: 16px;
-            font-size: 11px;
-            color: #64748b;
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        /* RTL support for Arabic */
-        body.rtl {
-            direction: rtl;
-        }
-        body.rtl .card {
-            text-align: right;
+        .footer-note { 
+            margin-top: 24px; 
+            font-size: 13px; 
+            color: #64748b; 
+            text-align: center; 
         }
     </style>
 </head>
@@ -182,39 +130,30 @@
 
     <div class="container">
         <h1>kollabilen.se</h1>
-        <p class="subtitle" id="uiSubtitle">Sök på registreringsnummer och få en direkt AI-analys inför ditt bilköp.</p>
+        <p class="subtitle">Sök på registreringsnummer för att se bilens historik, besiktning och specifikationer.</p>
 
         <div class="card">
             <form id="carForm">
                 <div class="form-group">
-                    <label for="regInput" id="uiRegLabel">Registreringsnummer</label>
-                    <input type="text" id="regInput" placeholder="t.ex. ABC 123" required autocomplete="off" style="text-transform: uppercase;">
+                    <label for="regInput">Registreringsnummer</label>
+                    <input type="text" id="regInput" placeholder="t.ex. ABC123" required autocomplete="off" maxlength="7">
                 </div>
-
-                <div class="form-group">
-                    <label for="linkInput" id="uiLinkLabel">Länk till annons (Valfritt - Blocket / Riddermark)</label>
-                    <input type="url" id="linkInput" placeholder="Klistra in länk...">
-                </div>
-
-                <div class="form-group">
-                    <label for="langSelect" id="uiLangLabel">Välj språk för rapporten</label>
-                    <select id="langSelect">
-                        <option value="Svenska">Svenska</option>
-                        <option value="English">English</option>
-                        <option value="العربية">العربية</option>
-                    </select>
-                </div>
-
-                <button type="submit" id="searchBtn">Kolla Bilen</button>
+                <button type="submit">Kolla Bilen</button>
             </form>
-
-            <div id="result"></div>
         </div>
 
-        <div class="footer-note" id="uiFooterNote">Hämta bilrapport - Helt utan registrering eller inloggning</div>
-        <p class="disclaimer-note" id="uiDisclaimer">* Ansvarsfriskrivning: Denna tjänst ger AI-genererade råd baserade på tillgängliga data och ersätter inte en manuell mekanisk besiktning. Inga personuppgifter lagras eller visas.</p>
+        <p class="footer-note">Direkt bilrapport - Helt utan registrering eller inloggning</p>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        document.getElementById('carForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const regInput = document.getElementById('regInput').value.trim().replace(/\s+/g, '');
+            if (regInput) {
+                // فتح تقرير السيارة الرسمي فوراً
+                window.location.href = `https://www.car.info/sv-se/license-plate/S/${regInput}`;
+            }
+        });
+    </script>
 </body>
 </html>
