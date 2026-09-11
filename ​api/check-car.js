@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-    // Tillåt endast POST-förfrågningar
     if (req.method !== 'POST') {
         return res.status(405).json({ fel: 'Metoden tillåts inte' });
     }
@@ -14,7 +13,6 @@ export default async function handler(req, res) {
     const selectedLang = language || 'Svenska';
 
     try {
-        // 1. Hämta grundläggande fordonsdata
         let rawCarData = null;
         try {
             const carDataRes = await fetch(`https://regcheck.org.uk/api/reg.json/SE/${cleanReg}`, {
@@ -24,14 +22,12 @@ export default async function handler(req, res) {
                 rawCarData = await carDataRes.json();
             }
         } catch (e) {
-            console.log('Ingen direkt databasträff, använder AI-analys.');
+            console.log('Ingen databasträff, kör AI.');
         }
 
-        // 2. Systeminstruktioner för OpenAI på svenska
-        const systemInstruction = `Du är en professionell och kunnig bilexpert för kollabilen.se. Generera hela rapporten på ${selectedLang}.
-Analysera bilmodellen, kända problem, uppskattade ägandekostnader, bränsleförbrukning och köpråd baserat på registreringsnumret: ${cleanReg}. Skriv på ett snyggt, lättläst och professionellt sätt med rubriker.`;
+        const systemInstruction = `Du är en bilexpert för kollabilen.se. Generera hela rapporten på ${selectedLang}.
+Analysera bilmodellen, kända problem, ägandekostnader och köpråd för reg: ${cleanReg}. Använd snygga rubriker.`;
 
-        // 3. Anslut till OpenAI API
         const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -42,7 +38,7 @@ Analysera bilmodellen, kända problem, uppskattade ägandekostnader, bränslefö
                 model: 'gpt-4o-mini',
                 messages: [
                     { role: 'system', content: systemInstruction },
-                    { role: 'user', content: `Analysera bilen med reg/modell: ${cleanReg}. Extra info: ${JSON.stringify(rawCarData || {})}` }
+                    { role: 'user', content: `Analysera bil: ${cleanReg}. Extra info: ${JSON.stringify(rawCarData || {})}` }
                 ],
                 temperature: 0.7
             })
@@ -54,11 +50,11 @@ Analysera bilmodellen, kända problem, uppskattade ägandekostnader, bränslefö
         }
 
         const aiData = await openAiRes.json();
-        const resultText = aiData.choices[0]?.message?.content || 'Ingen rapport kunde genereras.';
+        const resultText = aiData.choices[0]?.message?.content || 'Ingen rapport genererades.';
 
         return res.status(200).json({ resultat: resultText, bilData: rawCarData });
 
     } catch (error) {
-        return res.status(500).json({ fel: 'Internt serverfel', detaljer: error.message });
+        return res.status(500).json({ fel: 'Serverfel', detaljer: error.message });
     }
 }
