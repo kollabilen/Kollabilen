@@ -6,23 +6,21 @@
     <title>Kollabilen.se - Fordonsuppgifter</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #0b1329; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .lang-bar { margin-bottom: 15px; margin-top: 10px; }
+        body { background-color: #0b1329; background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 70%); color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .lang-bar { margin-bottom: 20px; }
         select { padding: 8px 12px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; }
-        .header-tag { background: #ffffff; color: #000000; padding: 6px 16px; border-radius: 6px; font-weight: 800; font-size: 18px; letter-spacing: 2px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .header-tag { background: #ffffff; color: #000000; padding: 6px 16px; border-radius: 6px; font-weight: 800; font-size: 18px; letter-spacing: 2px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .header-tag span { background: #0052b4; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
-        .container { width: 100%; max-width: 800px; text-align: center; }
-        h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #ffffff; }
-        p.subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
-        .card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: left; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: 500; }
-        input { width: 100%; padding: 12px 14px; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 8px; color: #ffffff; font-size: 16px; font-weight: 700; outline: none; text-transform: uppercase; }
-        button { width: 100%; padding: 14px; background: #0070f3; color: #ffffff; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .container { width: 100%; max-width: 440px; text-align: center; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; color: #ffffff; }
+        p.subtitle { color: #94a3b8; font-size: 15px; line-height: 1.5; margin-bottom: 24px; }
+        .card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border-radius: 20px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: left; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 8px; font-weight: 500; }
+        input { width: 100%; padding: 14px 16px; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 10px; color: #ffffff; font-size: 18px; font-weight: 700; outline: none; text-transform: uppercase; letter-spacing: 1px; }
+        button { width: 100%; padding: 16px; background: #0070f3; color: #ffffff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
         button:hover { background: #0051a8; }
-        
-        /* إطار عرض التقرير داخل الموقع */
-        .report-frame { display: none; margin-top: 20px; width: 100%; height: 650px; border: 1px solid #334155; border-radius: 12px; background: #ffffff; }
+        .footer-note { margin-top: 20px; font-size: 12px; color: #64748b; text-align: center; }
     </style>
 </head>
 <body>
@@ -41,7 +39,7 @@
 
     <div class="container">
         <h1>kollabilen.se</h1>
-        <p class="subtitle" id="txtSubtitle">Sök på registreringsnummer för att se bilens historik.</p>
+        <p class="subtitle" id="txtSubtitle">Sök på registreringsnummer för att se bilens historik och besiktning.</p>
 
         <div class="card">
             <form id="carForm">
@@ -51,17 +49,16 @@
                 </div>
                 <button type="submit" id="btnText">Sök Bilen</button>
             </form>
-
-            <!-- النافذة الداخلية لتقرير السيارة -->
-            <iframe id="reportFrame" class="report-frame"></iframe>
         </div>
+
+        <p class="footer-note" id="txtFooter">Direkt bilrapport - Helt utan registrering</p>
     </div>
 
     <script>
         const dict = {
-            sv: { subtitle: "Sök på registreringsnummer för att se bilens historik.", label: "Registreringsnummer", btn: "Sök Bilen", langCode: "sv-se", dir: "ltr" },
-            ar: { subtitle: "أدخل رقم اللوحة السويدي لعرض تقرير السيارة داخل الموقع.", label: "رقم اللوحة", btn: "بحث عن السيارة", langCode: "sv-se", dir: "rtl" },
-            en: { subtitle: "Search license plate to view vehicle details inside site.", label: "License Plate", btn: "Search Vehicle", langCode: "en-us", dir: "ltr" }
+            sv: { subtitle: "Sök på registreringsnummer för att se bilens historik och besiktning.", label: "Registreringsnummer", btn: "Sök Bilen", footer: "Direkt bilrapport - Helt utan registrering", langCode: "sv-se", dir: "ltr" },
+            ar: { subtitle: "أدخل رقم اللوحة السويدي لعرض تاريخ السيارة والفحص الدوري.", label: "رقم اللوحة", btn: "بحث عن السيارة", footer: "تقرير مباشر - بدون الحاجة لتسجيل الدخول", langCode: "sv-se", dir: "rtl" },
+            en: { subtitle: "Search license plate to view vehicle history and inspection report.", label: "License Plate", btn: "Search Vehicle", footer: "Direct vehicle report - No registration needed", langCode: "en-us", dir: "ltr" }
         };
 
         function switchLanguage(lang) {
@@ -70,6 +67,7 @@
             document.getElementById('txtSubtitle').innerText = data.subtitle;
             document.getElementById('txtLabel').innerText = data.label;
             document.getElementById('btnText').innerText = data.btn;
+            document.getElementById('txtFooter').innerText = data.footer;
         }
 
         document.getElementById('carForm').addEventListener('submit', function(e) {
@@ -77,11 +75,9 @@
             const regInput = document.getElementById('regInput').value.trim().replace(/\s+/g, '').toUpperCase();
             const currentLang = document.getElementById('langSelect').value;
             const langCode = dict[currentLang].langCode;
-            const frame = document.getElementById('reportFrame');
 
             if (regInput) {
-                frame.src = `https://www.car.info/${langCode}/license-plate/S/${regInput}`;
-                frame.style.display = "block";
+                window.location.href = `https://www.car.info/${langCode}/license-plate/S/${regInput}`;
             }
         });
     </script>
