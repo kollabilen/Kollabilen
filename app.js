@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchBtn.disabled = true;
         searchBtn.innerText = 'Söker...';
-        resultDiv.innerHTML = '<p style="color: #38bdf8; text-align: center;">Genererar AI-bilrapport, vänligen vänta...</p>';
+        resultDiv.innerHTML = '<p style="color: #38bdf8; text-align: center; font-weight: 500;">Genererar AI-bilrapport, vänligen vänta...</p>';
 
         try {
             const response = await fetch('/api/check-car', {
@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 resultDiv.innerHTML = `<div class="report">${data.resultat.replace(/\n/g, '<br>')}</div>`;
             } else {
-                resultDiv.innerHTML = `<p style="color: #f87171; text-align: center;">Ett fel uppstod: ${data.fel || 'Kunde inte hämta rapporten'}</p>`;
+                resultDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">Ett fel uppstod: ${data.fel || 'Kunde inte hämta rapporten'}</p>`;
             }
         } catch (err) {
-            resultDiv.innerHTML = `<p style="color: #f87171; text-align: center;">Anslutningsfel: Kunde inte nå servern.</p>`;
+            resultDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">Anslutningsfel: Kunde inte nå servern.</p>`;
         } finally {
             searchBtn.disabled = false;
             searchBtn.innerText = 'Kolla Bilen';
