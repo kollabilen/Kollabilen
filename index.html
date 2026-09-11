@@ -20,12 +20,7 @@
         input { width: 100%; padding: 14px 16px; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 10px; color: #ffffff; font-size: 18px; font-weight: 700; outline: none; text-transform: uppercase; letter-spacing: 1px; }
         button { width: 100%; padding: 16px; background: #0070f3; color: #ffffff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
         button:hover { background: #0051a8; }
-        .result-box { display: none; margin-top: 24px; background: #1e293b; border-radius: 12px; border: 1px solid #334155; padding: 20px; }
-        .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 14px; }
-        .result-row:last-child { border-bottom: none; }
-        .result-label { color: #94a3b8; }
-        .result-value { font-weight: 700; color: #ffffff; }
-        .error-msg { display: none; margin-top: 15px; color: #f87171; font-size: 14px; text-align: center; }
+        .footer-note { margin-top: 20px; font-size: 12px; color: #64748b; text-align: center; }
     </style>
 </head>
 <body>
@@ -44,7 +39,7 @@
 
     <div class="container">
         <h1>kollabilen.se</h1>
-        <p class="subtitle" id="txtSubtitle">Sök på registreringsnummer för att se biluppgifter direkt.</p>
+        <p class="subtitle" id="txtSubtitle">Sök på registreringsnummer för att se bilens historik och besiktning.</p>
 
         <div class="card">
             <form id="carForm">
@@ -54,73 +49,35 @@
                 </div>
                 <button type="submit" id="btnText">Sök Bilen</button>
             </form>
-
-            <div class="error-msg" id="errorMsg">Kunde inte hitta bilen. Kontrollera reg-numret.</div>
-
-            <div class="result-box" id="resultBox">
-                <div class="result-row">
-                    <span class="result-label" id="lblModel">Märke & Modell:</span>
-                    <span class="result-value" id="resModel">-</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label" id="lblYear">Årsmodell:</span>
-                    <span class="result-value" id="resYear">-</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label" id="lblPower">Motoreffekt:</span>
-                    <span class="result-value" id="resPower">-</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label" id="lblFuel">Drivmedel:</span>
-                    <span class="result-value" id="resFuel">-</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label" id="lblColor">Färg:</span>
-                    <span class="result-value" id="resColor">-</span>
-                </div>
-            </div>
         </div>
+
+        <p class="footer-note" id="txtFooter">Direkt bilrapport - Helt utan registrering</p>
     </div>
 
     <script>
         const dict = {
             sv: {
-                subtitle: "Sök på registreringsnummer för att se biluppgifter direkt.",
+                subtitle: "Sök på registreringsnummer för att se bilens historik och besiktning.",
                 label: "Registreringsnummer",
                 btn: "Sök Bilen",
-                btnLoading: "Söker...",
-                error: "Kunde inte hitta bilen. Kontrollera reg-numret.",
-                model: "Märke & Modell:",
-                year: "Årsmodell:",
-                power: "Motoreffekt:",
-                fuel: "Drivmedel:",
-                color: "Färg:",
+                footer: "Direkt bilrapport - Helt utan registrering",
+                langCode: "sv-se",
                 dir: "ltr"
             },
             ar: {
-                subtitle: "أدخل رقم اللوحة لعرض مواصفات السيارة مباشرة.",
-                label: "رقم اللوحة السويدي",
+                subtitle: "أدخل رقم اللوحة السويدي لعرض تاريخ السيارة والفحص الدوري.",
+                label: "رقم اللوحة",
                 btn: "بحث عن السيارة",
-                btnLoading: "جاري البحث...",
-                error: "لم يتم العثور على السيارة. تحقق من رقم اللوحة.",
-                model: "الماركة والموديل:",
-                year: "سنة الصنع:",
-                power: "قوة المحرك:",
-                fuel: "نوع الوقود:",
-                color: "اللون:",
+                footer: "تقرير مباشر - بدون الحاجة لتسجيل الدخول",
+                langCode: "sv-se",
                 dir: "rtl"
             },
             en: {
-                subtitle: "Search license plate to view vehicle specifications directly.",
+                subtitle: "Search license plate to view vehicle history and inspection report.",
                 label: "License Plate",
                 btn: "Search Vehicle",
-                btnLoading: "Searching...",
-                error: "Vehicle not found. Please check license plate.",
-                model: "Make & Model:",
-                year: "Model Year:",
-                power: "Engine Power:",
-                fuel: "Fuel Type:",
-                color: "Color:",
+                footer: "Direct vehicle report - No registration needed",
+                langCode: "en-us",
                 dir: "ltr"
             }
         };
@@ -131,44 +88,17 @@
             document.getElementById('txtSubtitle').innerText = data.subtitle;
             document.getElementById('txtLabel').innerText = data.label;
             document.getElementById('btnText').innerText = data.btn;
-            document.getElementById('errorMsg').innerText = data.error;
-            document.getElementById('lblModel').innerText = data.model;
-            document.getElementById('lblYear').innerText = data.year;
-            document.getElementById('lblPower').innerText = data.power;
-            document.getElementById('lblFuel').innerText = data.fuel;
-            document.getElementById('lblColor').innerText = data.color;
+            document.getElementById('txtFooter').innerText = data.footer;
         }
 
-        document.getElementById('carForm').addEventListener('submit', async function(e) {
+        document.getElementById('carForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const regInput = document.getElementById('regInput').value.trim().replace(/\s+/g, '').toUpperCase();
             const currentLang = document.getElementById('langSelect').value;
-            const btn = document.getElementById('btnText');
-            const resultBox = document.getElementById('resultBox');
-            const errorMsg = document.getElementById('errorMsg');
+            const langCode = dict[currentLang].langCode;
 
-            if (!regInput) return;
-
-            btn.innerText = dict[currentLang].btnLoading;
-            errorMsg.style.display = "none";
-            resultBox.style.display = "none";
-
-            try {
-                const response = await fetch(`https://api.statlys.com/v1/sv/vehicle/${regInput}`);
-                if (!response.ok) throw new Error();
-                const data = await response.json();
-
-                document.getElementById('resModel').innerText = `${data.make || ''} ${data.model || ''}`;
-                document.getElementById('resYear').innerText = data.year || '-';
-                document.getElementById('resPower').innerText = data.power ? `${data.power} hk` : '-';
-                document.getElementById('resFuel').innerText = data.fuel || '-';
-                document.getElementById('resColor').innerText = data.color || '-';
-
-                resultBox.style.display = "block";
-            } catch (err) {
-                errorMsg.style.display = "block";
-            } finally {
-                btn.innerText = dict[currentLang].btn;
+            if (regInput) {
+                window.location.href = `https://www.car.info/${langCode}/license-plate/S/${regInput}`;
             }
         });
     </script>
