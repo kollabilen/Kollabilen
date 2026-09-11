@@ -1,159 +1,119 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kollabilen.se - Bilhistorik & Besiktning</title>
-    <style>
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-        }
-        body { 
-            background-color: #0b1329; 
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 70%); 
-            color: #ffffff; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-        }
-        .header-tag { 
-            background: #ffffff; 
-            color: #000000; 
-            padding: 6px 16px; 
-            border-radius: 6px; 
-            font-weight: 800; 
-            font-size: 18px; 
-            letter-spacing: 2px; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 8px; 
-            margin-bottom: 24px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
-        }
-        .header-tag span { 
-            background: #0052b4; 
-            color: #ffffff; 
-            padding: 2px 6px; 
-            border-radius: 3px; 
-            font-size: 12px; 
-        }
-        .container { 
-            width: 100%; 
-            max-width: 440px; 
-            text-align: center; 
-        }
-        h1 { 
-            font-size: 32px; 
-            font-weight: 800; 
-            margin-bottom: 12px; 
-            color: #ffffff; 
-        }
-        p.subtitle { 
-            color: #94a3b8; 
-            font-size: 15px; 
-            line-height: 1.5; 
-            margin-bottom: 32px; 
-        }
-        .card { 
-            background: rgba(30, 41, 59, 0.7); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(12px); 
-            border-radius: 20px; 
-            padding: 28px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
-            text-align: left; 
-        }
-        .form-group { 
-            margin-bottom: 20px; 
-        }
-        label { 
-            display: block; 
-            font-size: 13px; 
-            color: #cbd5e1; 
-            margin-bottom: 8px; 
-            font-weight: 500; 
-        }
-        input { 
-            width: 100%; 
-            padding: 14px 16px; 
-            background: rgba(15, 23, 42, 0.8); 
-            border: 1px solid #334155; 
-            border-radius: 10px; 
-            color: #ffffff; 
-            font-size: 18px; 
-            font-weight: 700;
-            outline: none; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            transition: border-color 0.2s;
-        }
-        input:focus { 
-            border-color: #38bdf8; 
-        }
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            background: #0070f3; 
-            color: #ffffff; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 16px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: background 0.2s, transform 0.1s; 
-        }
-        button:hover { 
-            background: #0051a8; 
-        }
-        button:active { 
-            transform: scale(0.98); 
-        }
-        .footer-note { 
-            margin-top: 24px; 
-            font-size: 13px; 
-            color: #64748b; 
-            text-align: center; 
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Välkommen till vår webbplats</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+    header {
+      background-color: #005293; /* Swedish Blue */
+      color: #FECB00; /* Swedish Yellow */
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lang-selector {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn {
+      background-color: #005293;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn:hover {
+      background-color: #003a68;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="header-tag">
-        <span>S</span> ABC 123
-    </div>
+  <header>
+    <h1 id="header-title">Svensk Webbplats</h1>
+    
+    <!-- Väljare för språk (3 språk) -->
+    <select id="languageSelect" class="lang-selector" onchange="changeLanguage(this.value)">
+      <option value="sv" selected>Svenska (السويدية)</option>
+      <option value="ar">العربية</option>
+      <option value="en">English (الإنجليزية)</option>
+    </select>
+  </header>
 
-    <div class="container">
-        <h1>kollabilen.se</h1>
-        <p class="subtitle">Sök på registreringsnummer för att se bilens historik, besiktning och specifikationer.</p>
+  <div class="container">
+    <h2 id="welcome-title">Välkommen till vår plattform</h2>
+    <p id="description-text">
+      Detta är en komplett mall skriven i svenska, med inbyggt stöd för tre olika språk.
+    </p>
+    <button class="btn" id="action-btn">Läs mer</button>
+  </div>
 
-        <div class="card">
-            <form id="carForm">
-                <div class="form-group">
-                    <label for="regInput">Registreringsnummer</label>
-                    <input type="text" id="regInput" placeholder="t.ex. ABC123" required autocomplete="off" maxlength="7">
-                </div>
-                <button type="submit">Kolla Bilen</button>
-            </form>
-        </div>
+  <script>
+    // 1. Översättningsobjekt för tre språk (Svenska, Arabiska, Engelska)
+    const translations = {
+      sv: {
+        pageTitle: "Välkommen till vår webbplats",
+        headerTitle: "Svensk Webbplats",
+        welcomeTitle: "Välkommen till vår plattform",
+        descriptionText: "Detta är en komplett mall skriven i svenska, med inbyggt stöd för tre olika språk.",
+        actionBtn: "Läs mer",
+        dir: "ltr"
+      },
+      ar: {
+        pageTitle: "مرحباً بك في موقعنا",
+        headerTitle: "موقع سويدي",
+        welcomeTitle: "مرحباً بك في منصتنا",
+        descriptionText: "هذا قالب كامل مكتوب باللغة السويدية، مع دعم مدمج لثلاث لغات مختلفة.",
+        actionBtn: "إقرأ المزيد",
+        dir: "rtl"
+      },
+      en: {
+        pageTitle: "Welcome to our website",
+        headerTitle: "Swedish Website",
+        welcomeTitle: "Welcome to our platform",
+        descriptionText: "This is a complete template written in Swedish, with built-in support for three different languages.",
+        actionBtn: "Read more",
+        dir: "ltr"
+      }
+    };
 
-        <p class="footer-note">Direkt bilrapport - Helt utan registrering eller inloggning</p>
-    </div>
+    // 2. Funktion för att ändra språk och uppdatera gränssnittet
+    function changeLanguage(lang) {
+      const selectedLang = translations[lang];
 
-    <script>
-        document.getElementById('carForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const regInput = document.getElementById('regInput').value.trim().replace(/\s+/g, '');
-            if (regInput) {
-                // فتح تقرير السيارة الرسمي فوراً
-                window.location.href = `https://www.car.info/sv-se/license-plate/S/${regInput}`;
-            }
-        });
-    </script>
+      // Uppdatera texter i HTML
+      document.getElementById('page-title').innerText = selectedLang.pageTitle;
+      document.getElementById('header-title').innerText = selectedLang.headerTitle;
+      document.getElementById('welcome-title').innerText = selectedLang.welcomeTitle;
+      document.getElementById('description-text').innerText = selectedLang.descriptionText;
+      document.getElementById('action-btn').innerText = selectedLang.actionBtn;
+
+      // Uppdatera HTML-attribut (RTL för arabiska, LTR för svenska/engelska)
+      document.documentElement.lang = lang;
+      document.documentElement.dir = selectedLang.dir;
+    }
+  </script>
+
 </body>
 </html>
