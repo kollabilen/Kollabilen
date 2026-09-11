@@ -9,24 +9,24 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Märke och modell krävs' });
   }
 
-  const selectedLang = language || 'Arabiska';
+  const selectedLang = language || 'Svenska';
 
   try {
     const systemInstruction = `
-أنت خبير سيارات متخصص في السوق السويدي لموقع kollabilen.se.
-قم بتوليد تقرير شريف ودقيق للسيارة باللغة التالية: ${selectedLang}.
-اكتب التقرير بشكل نقاط واضحة ومباشرة تشمل:
-1. تقييم السيارة والموديل بشكل عام.
-2. تقييم السعر والمسافة (إذا تم توفيرها).
-3. أبرز المشاكل والعيوب الشائعة لهذا الموديل التي يجب الانتباه لها عند الشراء.
-4. النصيحة النهائية للمشتري.
+Du är en bilexpert specialiserad på den svenska begagnatmarknaden för kollabilen.se.
+Generera en ärlig och noggrann bilrapport på följande språk: ${selectedLang}.
+Skriv rapporten i tydliga punkter som inkluderar:
+1. Allmän utvärdering av bilen och modellen.
+2. Bedömning av pris och miltal (om angivet).
+3. Vanliga problem och kända fel för denna modell att se upp för vid köp.
+4. Slutgiltigt råd till köparen.
 `;
 
     const userPrompt = `
-الماركة: ${brand}
-الموديل والسنة: ${model}
-تفاصيل إضافية (السعر والممشى): ${details || 'غير محدد'}
-اللغة المطلوب التقرير بها: ${selectedLang}
+Märke: ${brand}
+Modell och År: ${model}
+Ytterligare detaljer (Pris och Miltal): ${details || 'Ej angivet'}
+Önskat språk för rapporten: ${selectedLang}
 `;
 
     const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -48,13 +48,13 @@ module.exports = async function handler(req, res) {
     const aiData = await openAiRes.json();
 
     if (!openAiRes.ok) {
-      return res.status(500).json({ error: aiData.error?.message || 'خطأ في مفتاح OpenAI API' });
+      return res.status(500).json({ error: aiData.error?.message || 'Fel med OpenAI API-nyckeln' });
     }
 
     const report = aiData.choices[0].message.content;
     return res.status(200).json({ report });
 
   } catch (error) {
-    return res.status(500).json({ error: 'خطأ داخلي في السيرفر: ' + error.message });
+    return res.status(500).json({ error: 'Internt serverfel: ' + error.message });
   }
 };
