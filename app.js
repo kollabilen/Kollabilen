@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function handleSearch(e) {
-        if (e) e.preventDefault(); // يمنع إعادة تحميل الصفحة فوراً
+        if (e) e.preventDefault();
 
         const regValue = regInput ? regInput.value.trim() : '';
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultDiv.innerHTML = '<p style="color: #3b82f6; font-weight: bold;">Genererar AI-bilrapport, vänligen vänta...</p>';
 
         try {
-            const response = await fetch('/api/check-car', {
+            const response = await fetch('/api/check-car.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultDiv.innerHTML = `<p style="color: red;">Ett fel uppstod: ${data.fel || 'Kunde inte hämta rapporten'}</p>`;
             }
         } catch (err) {
-            resultDiv.innerHTML = `<p style="color: red;">Nätverksfel: Kunde inte ansluta till servern.</p>`;
+            resultDiv.innerHTML = `<p style="color: red;">Ett anslutningsfel uppstod. Kontrollera nätverket och försök igen.</p>`;
         } finally {
             if (searchBtn) {
                 searchBtn.disabled = false;
