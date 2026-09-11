@@ -7,14 +7,14 @@ async function testAiConnection() {
   const output = document.getElementById('output');
 
   if (!brand || !model) {
-    alert('يرجى إدخال الماركة والموديل على الأقل.');
+    alert('Vänligen ange både märke och modell.');
     return;
   }
 
   searchBtn.disabled = true;
-  searchBtn.innerText = 'جاري الاتصال بالذكاء الاصطناعي...';
+  searchBtn.innerText = 'Ansluter till AI...';
   output.style.display = 'block';
-  output.innerText = 'جاري إرسال البيانات وتوليد التقرير...';
+  output.innerText = 'Skickar data och genererar rapport...';
 
   try {
     const response = await fetch('/api/check-car', {
@@ -28,12 +28,12 @@ async function testAiConnection() {
     if (response.ok) {
       output.innerText = data.report;
     } else {
-      output.innerText = 'خطأ من السيرفر: ' + (data.error || 'فشل توليد التقرير');
+      output.innerText = `Serverfel (${response.status}): ` + (data.error || JSON.stringify(data));
     }
   } catch (err) {
-    output.innerText = 'Connection Error: يتعذر الاتصال بالسيرفر حالياً.';
+    output.innerText = 'Anslutningsfel i webbläsaren: ' + err.message;
   } finally {
     searchBtn.disabled = false;
-    searchBtn.innerText = 'فحص السيارة الأن';
+    searchBtn.innerText = 'Kontrollera bilen nu';
   }
 }
