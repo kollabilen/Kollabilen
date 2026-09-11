@@ -64,16 +64,21 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     }
     label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
       border: 1px solid #3a506b;
       background: rgba(11, 19, 43, 0.9);
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       box-sizing: border-box;
       margin-bottom: 15px;
+      font-family: inherit;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 70px;
     }
     button {
       width: 100%;
@@ -130,8 +135,11 @@
       <label id="ui-lbl-reg">Registreringsnummer</label>
       <input type="text" id="regNr" placeholder="t.ex. ABC 123" maxlength="10">
 
-      <label id="ui-lbl-url">Länk till annons (Valfritt - Blocket / Riddermark)</label>
-      <input type="url" id="adUrl" placeholder="Klistra in länk här...">
+      <label id="ui-lbl-image">Ladda upp skärmdump av annonsen (Valfritt)</label>
+      <input type="file" id="adImage" accept="image/*">
+
+      <label id="ui-lbl-details">Eller klistra in annonstext / detaljer (Valfritt)</label>
+      <textarea id="adText" placeholder="Klistra in texten från Blocket/Riddermark här (modell, pris, miltal...)..."></textarea>
 
       <label id="ui-lbl-lang">Välj språk för rapporten</label>
       <select id="language" onchange="changeUiLanguage()">
