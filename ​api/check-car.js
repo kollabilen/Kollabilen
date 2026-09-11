@@ -3,68 +3,32 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Metod tillåts inte' });
   }
 
-  const { regNr, adText, imageBase64, language } = req.body || {};
+  const { brand, model, details, language } = req.body || {};
 
-  if (!regNr) {
-    return res.status(400).json({ error: 'Registreringsnummer krävs' });
+  if (!brand || !model) {
+    return res.status(400).json({ error: 'Märke och modell krävs' });
   }
 
-  const cleanReg = regNr.replace(/\s+/g, '').toUpperCase();
-  const selectedLang = language || 'Svenska';
+  const selectedLang = language || 'Arabiska';
 
   try {
-    // 1. محاولة جلب بيانات من داتا بيز مفتوحة
-    let rawCarData = null;
-    try {
-      const carDataRes = await fetch(`https://regcheck.org.uk/api/reg.json/${cleanReg}`, {
-        headers: { 'User-Agent': 'KollaBilen/1.0' }
-      });
-      if (carDataRes.ok) {
-        rawCarData = await carDataRes.json();
-      }
-    } catch (e) {
-      console.log('Ingen direkt databasträff, använder AI-analys.');
-    }
-
-    // 2. تعليمات النظام لـ OpenAI
     const systemInstruction = `
-Du är en professionell bilexpert för kollabilen.se.
-Generera hela rapporten på följande språk: ${selectedLang}.
-
-VIKTIGA REGLER OCH JURIDISK SÄKERHET:
-1. Visa ALDRIG personnamn eller personnummer. Om bild/data innehåller namn, ignorera det helt.
-2. Om en bild eller annonstext bifogas, läs av och analysera bilmodell, pris, miltal och specifikationer noggrant.
-3. Strukturera rapporten tydligt med rubriker:
-   - Sammanfattning & Bilmodell
-   - Pris och Miltalsbedömning
-   - Kända modellproblem & Besiktningspunkter
-   - Uppskattade ägandekostnader
-   - Köpråd och Slutsats
+أنت خبير سيارات متخصص في السوق السويدي لموقع kollabilen.se.
+قم بتوليد تقرير شريف ودقيق للسيارة باللغة التالية: ${selectedLang}.
+اكتب التقرير بشكل نقاط واضحة ومباشرة تشمل:
+1. تقييم السيارة والموديل بشكل عام.
+2. تقييم السعر والمسافة (إذا تم توفيرها).
+3. أبرز المشاكل والعيوب الشائعة لهذا الموديل التي يجب الانتباه لها عند الشراء.
+4. النصيحة النهائية للمشتري.
 `;
 
-    // 3. تجهيز طلب OpenAI لدعم الصورة والنص معاً (GPT-4o-mini Vision)
-    const userContent = [
-      {
-        type: 'text',
-        text: `Registreringsnummer: ${cleanReg}
-Språk: ${selectedLang}
-${adText ? 'Angiven annonstext/detaljer: ' + adText : ''}
-${rawCarData ? 'Hämtad fordonsdata: ' + JSON.stringify(rawCarData) : ''}
+    const userPrompt = `
+الماركة: ${brand}
+الموديل والسنة: ${model}
+تفاصيل إضافية (السعر والممشى): ${details || 'غير محدد'}
+اللغة المطلوب التقرير بها: ${selectedLang}
+`;
 
-Skapa en komplett och professionell bilrapport för köparen på ${selectedLang}.`
-      }
-    ];
-
-    if (imageBase64) {
-      userContent.push({
-        type: 'image_url',
-        image_url: {
-          url: imageBase64
-        }
-      });
-    }
-
-    // 4. إرسال الطلب إلى OpenAI
     const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -75,7 +39,7 @@ Skapa en komplett och professionell bilrapport för köparen på ${selectedLang}
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemInstruction },
-          { role: 'user', content: userContent }
+          { role: 'user', content: userPrompt }
         ],
         temperature: 0.5
       })
@@ -84,13 +48,13 @@ Skapa en komplett och professionell bilrapport för köparen på ${selectedLang}
     const aiData = await openAiRes.json();
 
     if (!openAiRes.ok) {
-      return res.status(500).json({ error: aiData.error?.message || 'AI-systemfel' });
+      return res.status(500).json({ error: aiData.error?.message || 'خطأ في مفتاح OpenAI API' });
     }
 
     const report = aiData.choices[0].message.content;
     return res.status(200).json({ report });
 
   } catch (error) {
-    return res.status(500).json({ error: 'Internt serverfel: ' + error.message });
+    return res.status(500).json({ error: 'خطأ داخلي في السيرفر: ' + error.message });
   }
 };
