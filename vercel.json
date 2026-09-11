@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/check-car",
+      "destination": "/api/check-car.js"
+    }
+  ]
+}
