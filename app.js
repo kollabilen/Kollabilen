@@ -36,20 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    regNr: regValue,
-                    language: 'Svenska'
+                    regNr: regValue
                 })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                resultDiv.innerHTML = `<div class="report" style="line-height: 1.6; text-align: left;">${data.resultat.replace(/\n/g, '<br>')}</div>`;
+                resultDiv.innerHTML = `<div class="report" style="line-height: 1.6; text-align: left; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">${data.resultat.replace(/\n/g, '<br>')}</div>`;
             } else {
-                resultDiv.innerHTML = `<p style="color: red;">Ett fel uppstod: ${data.fel || 'Kunde inte hämta rapporten'}</p>`;
+                resultDiv.innerHTML = `<p style="color: #ef4444;">Ett fel uppstod: ${data.fel || 'Kunde inte hämta rapporten'}</p>`;
             }
         } catch (err) {
-            resultDiv.innerHTML = `<p style="color: red;">Nätverksfel: Kunde inte ansluta till servern.</p>`;
+            resultDiv.innerHTML = `<p style="color: #ef4444;">Ett anslutningsfel uppstod. Kontrollera nätverket och försök igen.</p>`;
         } finally {
             if (searchBtn) {
                 searchBtn.disabled = false;
