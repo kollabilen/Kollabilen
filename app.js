@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Visa laddningsstatus på svenska
             searchBtn.disabled = true;
             searchBtn.innerText = 'Söker...';
             resultDiv.innerHTML = '<p>Genererar AI-bilrapport, vänligen vänta...</p>';
