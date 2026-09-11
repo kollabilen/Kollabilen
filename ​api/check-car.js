@@ -3,7 +3,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ fel: 'Endast POST-förfrågningar tillåts' });
     }
 
-    const { regNr } = req.body;
+    const { regNr, link, language } = req.body;
 
     if (!regNr) {
         return res.status(400).json({ fel: 'Registreringsnummer saknas' });
@@ -13,6 +13,8 @@ export default async function handler(req, res) {
     if (!apiKey) {
         return res.status(500).json({ fel: 'API-nyckel saknas på servern' });
     }
+
+    const targetLanguage = language || 'Svenska';
 
     try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -26,11 +28,11 @@ export default async function handler(req, res) {
                 messages: [
                     {
                         role: 'system',
-                        content: 'Du är en professionell bilexpert. Ge en kort, strukturerad och hjälpsam analys av bilen baserat på registreringsnumret på svenska.'
+                        content: `Du är en professionell bilexpert. Ge en kort, strukturerad och hjälpsam analys av bilen baserat på registreringsnumret och eventuell annonslänk. Svara helt på språket: ${targetLanguage}.`
                     },
                     {
                         role: 'user',
-                        content: `Ge mig en bilrapport för registreringsnummer: ${regNr}`
+                        content: `Registreringsnummer: ${regNr}. ${link ? 'Annonslänk: ' + link : ''}`
                     }
                 ]
             })
