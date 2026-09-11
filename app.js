@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const carForm = document.getElementById('carForm');
     const regInput = document.getElementById('regInput');
+    const linkInput = document.getElementById('linkInput');
+    const langSelect = document.getElementById('langSelect');
     const searchBtn = document.getElementById('searchBtn');
     const resultDiv = document.getElementById('result');
 
@@ -8,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const regValue = regInput.value.trim();
+        const linkValue = linkInput ? linkInput.value.trim() : '';
+        const langValue = langSelect ? langSelect.value : 'Svenska';
+
         if (!regValue) return;
 
         searchBtn.disabled = true;
@@ -18,7 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/check-car', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ regNr: regValue })
+                body: JSON.stringify({ 
+                    regNr: regValue,
+                    link: linkValue,
+                    language: langValue
+                })
             });
 
             const data = await response.json();
