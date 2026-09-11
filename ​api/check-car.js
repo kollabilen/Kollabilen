@@ -1,9 +1,9 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Metod tillåts inte' });
   }
 
-  const { regNr, adUrl, language } = req.body;
+  const { regNr, adText, imageBase64, language } = req.body || {};
 
   if (!regNr) {
     return res.status(400).json({ error: 'Registreringsnummer krävs' });
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   const selectedLang = language || 'Svenska';
 
   try {
-    // 1. Hämtar fordonsdata från öppna databaser
+    // 1. محاولة جلب بيانات من داتا بيز مفتوحة
     let rawCarData = null;
     try {
       const carDataRes = await fetch(`https://regcheck.org.uk/api/reg.json/${cleanReg}`, {
@@ -26,50 +26,45 @@ export default async function handler(req, res) {
       console.log('Ingen direkt databasträff, använder AI-analys.');
     }
 
-    // 2. Hämtar annonsinnehåll via Jina Reader om länk finns
-    let adContent = '';
-    if (adUrl) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-        const jinaRes = await fetch(`https://r.jina.ai/${adUrl}`, {
-          signal: controller.signal,
-          headers: { 'User-Agent': 'KollaBilen/1.0' }
-        });
-        clearTimeout(timeoutId);
-
-        if (jinaRes.ok) {
-          const fullText = await jinaRes.text();
-          adContent = fullText.substring(0, 2000);
-        }
-      } catch (e) {
-        console.log('Kunde inte läsa annonslänk.');
-      }
-    }
-
-    // 3. Systeminstruktioner för OpenAI baserat på valt språk
+    // 2. تعليمات النظام لـ OpenAI
     const systemInstruction = `
 Du är en professionell bilexpert för kollabilen.se.
 Generera hela rapporten på följande språk: ${selectedLang}.
 
 VIKTIGA REGLER OCH JURIDISK SÄKERHET:
-1. Visa ALDRIG personnamn eller personnummer. Om data innehåller namn, ignorera det helt.
-2. Om annonsinnehåll finns, analysera det angivna priset i förhållande till bilens skick och marknadsvärde.
-3. Fokusera på bilens tekniska specifikationer, kända modellproblem, besiktningspunkter, uppskattade ägandekostnader och köpråd.
+1. Visa ALDRIG personnamn eller personnummer. Om bild/data innehåller namn, ignorera det helt.
+2. Om en bild eller annonstext bifogas, läs av och analysera bilmodell, pris, miltal och specifikationer noggrant.
+3. Strukturera rapporten tydligt med rubriker:
+   - Sammanfattning & Bilmodell
+   - Pris och Miltalsbedömning
+   - Kända modellproblem & Besiktningspunkter
+   - Uppskattade ägandekostnader
+   - Köpråd och Slutsats
 `;
 
-    const userPrompt = `
-Registreringsnummer: ${cleanReg}
+    // 3. تجهيز طلب OpenAI لدعم الصورة والنص معاً (GPT-4o-mini Vision)
+    const userContent = [
+      {
+        type: 'text',
+        text: `Registreringsnummer: ${cleanReg}
 Språk: ${selectedLang}
-${adUrl ? 'Annonslänk: ' + adUrl : ''}
-${adContent ? 'Läst annonsinnehåll: ' + adContent : ''}
+${adText ? 'Angiven annonstext/detaljer: ' + adText : ''}
 ${rawCarData ? 'Hämtad fordonsdata: ' + JSON.stringify(rawCarData) : ''}
 
-Skapa en komplett bilrapport för köparen på ${selectedLang}.
-`;
+Skapa en komplett och professionell bilrapport för köparen på ${selectedLang}.`
+      }
+    ];
 
-    // 4. Anrop till OpenAI GPT-4o-mini
+    if (imageBase64) {
+      userContent.push({
+        type: 'image_url',
+        image_url: {
+          url: imageBase64
+        }
+      });
+    }
+
+    // 4. إرسال الطلب إلى OpenAI
     const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -80,7 +75,7 @@ Skapa en komplett bilrapport för köparen på ${selectedLang}.
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemInstruction },
-          { role: 'user', content: userPrompt }
+          { role: 'user', content: userContent }
         ],
         temperature: 0.5
       })
@@ -98,4 +93,4 @@ Skapa en komplett bilrapport för köparen på ${selectedLang}.
   } catch (error) {
     return res.status(500).json({ error: 'Internt serverfel: ' + error.message });
   }
-}
+};
