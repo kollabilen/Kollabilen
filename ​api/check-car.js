@@ -1,4 +1,4 @@
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Metod tillåts inte' });
   }
@@ -7,6 +7,11 @@ module.exports = async function handler(req, res) {
 
   if (!brand || !model) {
     return res.status(400).json({ error: 'Märke och modell krävs' });
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'OPENAI_API_KEY saknas i Vercel settings' });
   }
 
   const selectedLang = language || 'Svenska';
@@ -32,7 +37,7 @@ Ytterligare detaljer (Pris och Miltal): ${details || 'Ej angivet'}
     const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -48,7 +53,9 @@ Ytterligare detaljer (Pris och Miltal): ${details || 'Ej angivet'}
     const aiData = await openAiRes.json();
 
     if (!openAiRes.ok) {
-      return res.status(500).json({ error: aiData.error?.message || 'Fel med OpenAI API-nyckeln' });
+      return res.status(openAiRes.status).json({ 
+        error: aiData.error?.message || 'Fel vid anslutning till OpenAI' 
+      });
     }
 
     const report = aiData.choices[0].message.content;
@@ -57,4 +64,4 @@ Ytterligare detaljer (Pris och Miltal): ${details || 'Ej angivet'}
   } catch (error) {
     return res.status(500).json({ error: 'Internt serverfel: ' + error.message });
   }
-};
+}
