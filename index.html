@@ -1,85 +1,166 @@
 <!DOCTYPE html>
 <html lang="sv" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kollabilen.se - Fordonsuppgifter</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #0b1329; background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 70%); color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .lang-bar { margin-bottom: 20px; }
-        select { padding: 8px 12px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; }
-        .header-tag { background: #ffffff; color: #000000; padding: 6px 16px; border-radius: 6px; font-weight: 800; font-size: 18px; letter-spacing: 2px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-        .header-tag span { background: #0052b4; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
-        .container { width: 100%; max-width: 440px; text-align: center; }
-        h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; color: #ffffff; }
-        p.subtitle { color: #94a3b8; font-size: 15px; line-height: 1.5; margin-bottom: 24px; }
-        .card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border-radius: 20px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: left; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 8px; font-weight: 500; }
-        input { width: 100%; padding: 14px 16px; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 10px; color: #ffffff; font-size: 18px; font-weight: 700; outline: none; text-transform: uppercase; letter-spacing: 1px; }
-        button { width: 100%; padding: 16px; background: #0070f3; color: #ffffff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
-        button:hover { background: #0051a8; }
-        .footer-note { margin-top: 20px; font-size: 12px; color: #64748b; text-align: center; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kollabilen.se - AI-driven bilrapport</title>
+  <style>
+    :root {
+      --card-bg: rgba(28, 37, 65, 0.88);
+      --accent-color: #0077ff;
+      --text-color: #ffffff;
+      --text-muted: #a0aec0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, rgba(11, 19, 43, 0.85) 0%, rgba(11, 19, 43, 0.95) 100%), 
+                  url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .plate-badge {
+      display: inline-flex;
+      align-items: center;
+      background: white;
+      color: black;
+      font-weight: bold;
+      font-size: 22px;
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: 2px solid #333;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+    .plate-badge .s-flag {
+      background: #0052b4;
+      color: #ffda44;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 2px;
+      margin-right: 8px;
+    }
+    h1 { font-size: 26px; margin: 5px 0; font-weight: 800; letter-spacing: -0.5px; }
+    p.subtitle { color: var(--text-muted); font-size: 14px; margin-top: 0; }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #3a506b;
+      background: rgba(11, 19, 43, 0.9);
+      color: white;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 119, 255, 0.3);
+    }
+    button:disabled { opacity: 0.6; }
+    .badge-info {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    #result-box { display: none; line-height: 1.6; }
+    .disclaimer {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 15px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .footer-credit {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 25px;
+      opacity: 0.7;
+    }
+    .footer-credit strong {
+      color: #ffffff;
+    }
+  </style>
 </head>
 <body>
-
-    <div class="lang-bar">
-        <select id="langSelect" onchange="switchLanguage(this.value)">
-            <option value="sv" selected>🇸🇪 Svenska</option>
-            <option value="ar">🇸🇦 العربية</option>
-            <option value="en">🇬🇧 English</option>
-        </select>
+  <div class="container">
+    <div class="header">
+      <div class="plate-badge"><span class="s-flag">S</span> ABC 123</div>
+      <h1>kollabilen.se</h1>
+      <p class="subtitle" id="ui-subtitle">Sök på registreringsnummer och få en direkt AI-analys inför ditt bilköp.</p>
     </div>
 
-    <div class="header-tag">
-        <span>S</span> ABC 123
+    <div class="card">
+      <label id="ui-lbl-reg">Registreringsnummer</label>
+      <input type="text" id="regNr" placeholder="t.ex. ABC 123" maxlength="10">
+
+      <label id="ui-lbl-url">Länk till annons (Valfritt - Blocket / Riddermark)</label>
+      <input type="url" id="adUrl" placeholder="Klistra in länk här...">
+
+      <label id="ui-lbl-lang">Välj språk för rapporten</label>
+      <select id="language" onchange="changeUiLanguage()">
+        <option value="Svenska" selected>Svenska</option>
+        <option value="Arabiska">العربية</option>
+        <option value="Engelska">English</option>
+      </select>
+
+      <button id="searchBtn" onclick="analyzeCar()">Kolla Bilen</button>
     </div>
 
-    <div class="container">
-        <h1>kollabilen.se</h1>
-        <p class="subtitle" id="txtSubtitle">Sök på registreringsnummer för att se bilens historik och besiktning.</p>
-
-        <div class="card">
-            <form id="carForm">
-                <div class="form-group">
-                    <label for="regInput" id="txtLabel">Registreringsnummer</label>
-                    <input type="text" id="regInput" placeholder="ABC123" required autocomplete="off" maxlength="7">
-                </div>
-                <button type="submit" id="btnText">Sök Bilen</button>
-            </form>
-        </div>
-
-        <p class="footer-note" id="txtFooter">Direkt bilrapport - Helt utan registrering</p>
+    <div class="badge-info" id="ui-badge-info">
+      Hämta bilrapport - Helt utan registrering eller inloggning
     </div>
 
-    <script>
-        const dict = {
-            sv: { subtitle: "Sök på registreringsnummer för att se bilens historik och besiktning.", label: "Registreringsnummer", btn: "Sök Bilen", footer: "Direkt bilrapport - Helt utan registrering", langCode: "sv-se", dir: "ltr" },
-            ar: { subtitle: "أدخل رقم اللوحة السويدي لعرض تاريخ السيارة والفحص الدوري.", label: "رقم اللوحة", btn: "بحث عن السيارة", footer: "تقرير مباشر - بدون الحاجة لتسجيل الدخول", langCode: "sv-se", dir: "rtl" },
-            en: { subtitle: "Search license plate to view vehicle history and inspection report.", label: "License Plate", btn: "Search Vehicle", footer: "Direct vehicle report - No registration needed", langCode: "en-us", dir: "ltr" }
-        };
+    <p class="disclaimer" id="ui-disclaimer">
+      * Ansvarsfriskrivning: Denna tjänst erbjuder AI-genererad rådgivning baserad på tillgänglig data och ersätter inte en manuell mekanisk besiktning. Inga personuppgifter lagras eller visas.
+    </p>
 
-        function switchLanguage(lang) {
-            const data = dict[lang];
-            document.documentElement.dir = data.dir;
-            document.getElementById('txtSubtitle').innerText = data.subtitle;
-            document.getElementById('txtLabel').innerText = data.label;
-            document.getElementById('btnText').innerText = data.btn;
-            document.getElementById('txtFooter').innerText = data.footer;
-        }
+    <div class="card" id="result-box">
+      <h3 id="ui-report-title">Fordonsrapport</h3>
+      <div id="output"></div>
+    </div>
 
-        document.getElementById('carForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const regInput = document.getElementById('regInput').value.trim().replace(/\s+/g, '').toUpperCase();
-            const currentLang = document.getElementById('langSelect').value;
-            const langCode = dict[currentLang].langCode;
+    <p class="footer-credit" id="ui-footer">
+      Utvecklad av <strong>Marven</strong> | kollabilen.se
+    </p>
+  </div>
 
-            if (regInput) {
-                window.location.href = `https://www.car.info/${langCode}/license-plate/S/${regInput}`;
-            }
-        });
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
