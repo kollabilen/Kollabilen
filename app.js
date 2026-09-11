@@ -4,8 +4,9 @@ const translations = {
     subtitle: 'Sök på registreringsnummer och få en direkt AI-analys inför ditt bilköp.',
     lblReg: 'Registreringsnummer',
     phReg: 't.ex. ABC 123',
-    lblUrl: 'Länk till annons (Valfritt - Blocket / Riddermark)',
-    phUrl: 'Klistra in länk här...',
+    lblImage: 'Ladda upp skärmdump av annonsen (Valfritt)',
+    lblDetails: 'Eller klistra in annonstext / detaljer (Valfritt)',
+    phDetails: 'Klistra in texten från Blocket/Riddermark här (modell, pris, miltal...)...',
     lblLang: 'Välj språk för rapporten',
     btnSearch: 'Kolla Bilen',
     badgeInfo: 'Hämta bilrapport - Helt utan registrering eller inloggning',
@@ -18,11 +19,12 @@ const translations = {
   },
   Arabiska: {
     dir: 'rtl',
-    subtitle: 'ابحث برقم السيارة واحصل على تحليل مباشر بالذكاء الاصطناعي قبل الشراء.',
+    subtitle: 'ابحث برقم السيارة واحصل على تحلیل مباشر بالذكاء الاصطناعي قبل الشراء.',
     lblReg: 'رقم السيارة (Registreringsnummer)',
     phReg: 'مثال: ABC 123',
-    lblUrl: 'رابط الإعلان (اختياري - Blocket / Riddermark)',
-    phUrl: 'الصق الرابط هنا...',
+    lblImage: 'ارفع صورة شاشة للإعلان (اختياري)',
+    lblDetails: 'أو الصق نص الإعلان / التفاصيل (اختياري)',
+    phDetails: 'الصق النص من Blocket أو Riddermark هنا (الموديل، السعر، الكيلومترات...)...',
     lblLang: 'اختر لغة التقرير والواجهة',
     btnSearch: 'فحص السيارة',
     badgeInfo: 'احصل على تقرير السيارة - بدون تسجيل أو تسجيل دخول',
@@ -31,15 +33,16 @@ const translations = {
     footer: 'تطوير <strong>Marven</strong> | kollabilen.se',
     alertReg: 'يرجى إدخال رقم السيارة.',
     btnAnalyzing: 'جاري التحليل...',
-    loading: 'جاري جلب البيانات وتوليد التقرير...'
+    loading: 'جاري جلب البيانات وقراءة الصورة لتوليد التقرير...'
   },
   Engelska: {
     dir: 'ltr',
     subtitle: 'Search by license plate and get an instant AI analysis before buying.',
     lblReg: 'Registration Number',
     phReg: 'e.g. ABC 123',
-    lblUrl: 'Ad link (Optional - Blocket / Riddermark)',
-    phUrl: 'Paste link here...',
+    lblImage: 'Upload screenshot of the ad (Optional)',
+    lblDetails: 'Or paste ad text / details (Optional)',
+    phDetails: 'Paste the text from Blocket/Riddermark here (model, price, mileage...)...',
     lblLang: 'Select language for report',
     btnSearch: 'Check Car',
     badgeInfo: 'Get car report - Completely free without registration',
@@ -48,7 +51,7 @@ const translations = {
     footer: 'Developed by <strong>Marven</strong> | kollabilen.se',
     alertReg: 'Please enter a registration number.',
     btnAnalyzing: 'Analyzing...',
-    loading: 'Fetching data and generating AI report...'
+    loading: 'Fetching data and processing image for AI report...'
   }
 };
 
@@ -60,8 +63,9 @@ function changeUiLanguage() {
   document.getElementById('ui-subtitle').innerText = t.subtitle;
   document.getElementById('ui-lbl-reg').innerText = t.lblReg;
   document.getElementById('regNr').placeholder = t.phReg;
-  document.getElementById('ui-lbl-url').innerText = t.lblUrl;
-  document.getElementById('adUrl').placeholder = t.phUrl;
+  document.getElementById('ui-lbl-image').innerText = t.lblImage;
+  document.getElementById('ui-lbl-details').innerText = t.lblDetails;
+  document.getElementById('adText').placeholder = t.phDetails;
   document.getElementById('ui-lbl-lang').innerText = t.lblLang;
   document.getElementById('searchBtn').innerText = t.btnSearch;
   document.getElementById('ui-badge-info').innerText = t.badgeInfo;
@@ -70,22 +74,42 @@ function changeUiLanguage() {
   document.getElementById('ui-footer').innerHTML = t.footer;
 }
 
+// تحويل ملف الصورة إلى صيغة Base64
+function convertFileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 async function analyzeCar() {
   const regNrInput = document.getElementById('regNr');
-  const adUrlInput = document.getElementById('adUrl');
+  const adTextInput = document.getElementById('adText');
+  const imageInput = document.getElementById('adImage');
   const langInput = document.getElementById('language');
   const searchBtn = document.getElementById('searchBtn');
   const resultBox = document.getElementById('result-box');
   const output = document.getElementById('output');
 
   const regNr = regNrInput.value.trim();
-  const adUrl = adUrlInput.value.trim();
+  const adText = adTextInput.value.trim();
   const language = langInput.value;
   const t = translations[language] || translations.Svenska;
 
   if (!regNr) {
     alert(t.alertReg);
     return;
+  }
+
+  let imageBase64 = null;
+  if (imageInput.files && imageInput.files[0]) {
+    try {
+      imageBase64 = await convertFileToBase64(imageInput.files[0]);
+    } catch (e) {
+      console.log('Kunde inte läsa bilden.');
+    }
   }
 
   searchBtn.disabled = true;
@@ -97,7 +121,7 @@ async function analyzeCar() {
     const response = await fetch('/api/check-car', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ regNr, adUrl, language })
+      body: JSON.stringify({ regNr, adText, imageBase64, language })
     });
 
     const data = await response.json();
