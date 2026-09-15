@@ -1,359 +1,116 @@
 const translations = {
-  sv: {
-    headerSubtitle: "AI-analys innan du köper bilen",
-    title: "Kolla bilen innan du köper",
-    description:
-      "Fyll i information om bilen och få en AI-baserad analys av vanliga problem, pris, risker, underhåll och vad du bör kontrollera.",
-    formTitle: "Bilens information",
-    brand: "Märke",
-    model: "Modell",
-    year: "Årsmodell",
-    price: "Pris",
-    mileage: "Miltal",
-    mileageHint: "Ange mil, inte kilometer.",
-    fuel: "Bränsle",
-    transmission: "Växellåda",
-    adUrl: "Annonslänk",
-    adUrlHint: "Valfritt.",
-    submit: "Analysera bilen",
-    loading: "Analyserar bilen...",
-    resultTitle: "Bilanalys",
-    errorRequired: "Fyll i alla obligatoriska fält.",
-    errorGeneric: "Ett fel uppstod. Försök igen.",
-    errorServer: "Serverfel"
+  Svenska: {
+    dir: 'ltr',
+    subtitle: 'Sök på registreringsnummer och få en direkt AI-analys inför ditt bilköp.',
+    lblReg: 'Registreringsnummer',
+    phReg: 't.ex. ABC 123',
+    lblUrl: 'Länk till annons (Valfritt - Blocket / Riddermark)',
+    phUrl: 'Klistra in länk här...',
+    lblLang: 'Välj språk för rapporten',
+    btnSearch: 'Kolla Bilen',
+    badgeInfo: 'Hämta bilrapport - Helt utan registrering eller inloggning',
+    disclaimer: '* Ansvarsfriskrivning: Denna tjänst erbjuder AI-genererad rådgivning baserad på tillgänglig data och ersätter inte en manuell mekanisk besiktning. Inga personuppgifter lagras eller visas.',
+    reportTitle: 'Fordonsrapport',
+    footer: 'Utvecklad av <strong>Marven</strong> | kollabilen.se',
+    alertReg: 'Vänligen ange ett registreringsnummer.',
+    btnAnalyzing: 'Analyserar...',
+    loading: 'Hämtar data och genererar AI-rapport...'
   },
-
-  ar: {
-    headerSubtitle: "تحليل السيارة بالذكاء الاصطناعي قبل الشراء",
-    title: "افحص السيارة قبل أن تشتري",
-    description:
-      "أدخل معلومات السيارة واحصل على تحليل بالذكاء الاصطناعي عن المشاكل الشائعة والسعر والمخاطر والصيانة وما يجب فحصه.",
-    formTitle: "معلومات السيارة",
-    brand: "الماركة",
-    model: "الموديل",
-    year: "سنة الصنع",
-    price: "السعر",
-    mileage: "المسافة المقطوعة",
-    mileageHint: "اكتب المسافة بالميل السويدي (mil)، وليس بالكيلومتر.",
-    fuel: "نوع الوقود",
-    transmission: "ناقل الحركة",
-    adUrl: "رابط الإعلان",
-    adUrlHint: "اختياري.",
-    submit: "حلل السيارة",
-    loading: "جاري تحليل السيارة...",
-    resultTitle: "تحليل السيارة",
-    errorRequired: "يرجى ملء جميع الحقول المطلوبة.",
-    errorGeneric: "حدث خطأ. حاول مرة أخرى.",
-    errorServer: "خطأ في الخادم"
+  Arabiska: {
+    dir: 'rtl',
+    subtitle: 'ابحث برقم السيارة واحصل على تحليل مباشر بالذكاء الاصطناعي قبل الشراء.',
+    lblReg: 'رقم السيارة (Registreringsnummer)',
+    phReg: 'مثال: ABC 123',
+    lblUrl: 'رابط الإعلان (اختياري - Blocket / Riddermark)',
+    phUrl: 'الصق الرابط هنا...',
+    lblLang: 'اختر لغة التقرير والواجهة',
+    btnSearch: 'فحص السيارة',
+    badgeInfo: 'احصل على تقرير السيارة - بدون تسجيل أو تسجيل دخول',
+    disclaimer: '* إخلاء مسؤولية: تقدم هذه الخدمة استشارة ناتجة عن الذكاء الاصطناعي بناءً على البيانات المتاحة ولا تستبدل الفحص الميكانيكي اليدوي. لا يتم حفظ أو عرض أي بيانات شخصية.',
+    reportTitle: 'تقرير السيارة',
+    footer: 'تطوير <strong>Marven</strong> | kollabilen.se',
+    alertReg: 'يرجى إدخال رقم السيارة.',
+    btnAnalyzing: 'جاري التحليل...',
+    loading: 'جاري جلب البيانات وتوليد التقرير...'
   },
-
-  en: {
-    headerSubtitle: "AI car analysis before you buy",
-    title: "Check the car before you buy",
-    description:
-      "Enter the car information and get an AI-based analysis of common problems, price, risks, maintenance and what you should check.",
-    formTitle: "Car information",
-    brand: "Brand",
-    model: "Model",
-    year: "Year",
-    price: "Price",
-    mileage: "Mileage",
-    mileageHint: "Enter Swedish mil, not kilometers.",
-    fuel: "Fuel",
-    transmission: "Transmission",
-    adUrl: "Advertisement URL",
-    adUrlHint: "Optional.",
-    submit: "Analyze car",
-    loading: "Analyzing car...",
-    resultTitle: "Car analysis",
-    errorRequired: "Please fill in all required fields.",
-    errorGeneric: "An error occurred. Please try again.",
-    errorServer: "Server error"
+  Engelska: {
+    dir: 'ltr',
+    subtitle: 'Search by license plate and get an instant AI analysis before buying.',
+    lblReg: 'Registration Number',
+    phReg: 'e.g. ABC 123',
+    lblUrl: 'Ad link (Optional - Blocket / Riddermark)',
+    phUrl: 'Paste link here...',
+    lblLang: 'Select language for report',
+    btnSearch: 'Check Car',
+    badgeInfo: 'Get car report - Completely free without registration',
+    disclaimer: '* Disclaimer: This service provides AI-generated advice based on available data and does not replace a manual mechanical inspection. No personal data is stored or displayed.',
+    reportTitle: 'Vehicle Report',
+    footer: 'Developed by <strong>Marven</strong> | kollabilen.se',
+    alertReg: 'Please enter a registration number.',
+    btnAnalyzing: 'Analyzing...',
+    loading: 'Fetching data and generating AI report...'
   }
 };
 
+function changeUiLanguage() {
+  const lang = document.getElementById('language').value;
+  const t = translations[lang] || translations.Svenska;
 
-const languageSelect = document.getElementById("language");
-
-const form = document.getElementById("carForm");
-
-const submitButton = document.getElementById("submitButton");
-
-const loading = document.getElementById("loading");
-
-const loadingText = document.getElementById("loadingText");
-
-const resultCard = document.getElementById("resultCard");
-
-const result = document.getElementById("result");
-
-
-function setLanguage(lang) {
-
-  const t = translations[lang] || translations.sv;
-
-  document.documentElement.lang = lang;
-
-  document.getElementById("headerSubtitle").textContent =
-    t.headerSubtitle;
-
-  document.getElementById("title").textContent =
-    t.title;
-
-  document.getElementById("description").textContent =
-    t.description;
-
-  document.getElementById("formTitle").textContent =
-    t.formTitle;
-
-  document.getElementById("brandLabel").textContent =
-    t.brand;
-
-  document.getElementById("modelLabel").textContent =
-    t.model;
-
-  document.getElementById("yearLabel").textContent =
-    t.year;
-
-  document.getElementById("priceLabel").textContent =
-    t.price;
-
-  document.getElementById("mileageLabel").textContent =
-    t.mileage;
-
-  document.getElementById("mileageHint").textContent =
-    t.mileageHint;
-
-  document.getElementById("fuelLabel").textContent =
-    t.fuel;
-
-  document.getElementById("transmissionLabel").textContent =
-    t.transmission;
-
-  document.getElementById("adUrlLabel").textContent =
-    t.adUrl;
-
-  document.getElementById("adUrlHint").textContent =
-    t.adUrlHint;
-
-  submitButton.textContent =
-    t.submit;
-
-  loadingText.textContent =
-    t.loading;
-
-  document.getElementById("resultTitle").textContent =
-    t.resultTitle;
-
-  if (lang === "ar") {
-    document.body.dir = "rtl";
-  } else {
-    document.body.dir = "ltr";
-  }
+  document.documentElement.dir = t.dir;
+  document.getElementById('ui-subtitle').innerText = t.subtitle;
+  document.getElementById('ui-lbl-reg').innerText = t.lblReg;
+  document.getElementById('regNr').placeholder = t.phReg;
+  document.getElementById('ui-lbl-url').innerText = t.lblUrl;
+  document.getElementById('adUrl').placeholder = t.phUrl;
+  document.getElementById('ui-lbl-lang').innerText = t.lblLang;
+  document.getElementById('searchBtn').innerText = t.btnSearch;
+  document.getElementById('ui-badge-info').innerText = t.badgeInfo;
+  document.getElementById('ui-disclaimer').innerText = t.disclaimer;
+  document.getElementById('ui-report-title').innerText = t.reportTitle;
+  document.getElementById('ui-footer').innerHTML = t.footer;
 }
 
+async function analyzeCar() {
+  const regNrInput = document.getElementById('regNr');
+  const adUrlInput = document.getElementById('adUrl');
+  const langInput = document.getElementById('language');
+  const searchBtn = document.getElementById('searchBtn');
+  const resultBox = document.getElementById('result-box');
+  const output = document.getElementById('output');
 
-languageSelect.addEventListener("change", function () {
+  const regNr = regNrInput.value.trim();
+  const adUrl = adUrlInput.value.trim();
+  const language = langInput.value;
+  const t = translations[language] || translations.Svenska;
 
-  setLanguage(this.value);
-
-});
-
-
-form.addEventListener("submit", async function (event) {
-
-  event.preventDefault();
-
-  const lang = languageSelect.value;
-
-  const t = translations[lang] || translations.sv;
-
-
-  const brand =
-    document.getElementById("brand").value.trim();
-
-  const model =
-    document.getElementById("model").value.trim();
-
-  const year =
-    document.getElementById("year").value.trim();
-
-  const price =
-    document.getElementById("price").value.trim();
-
-  const mileage =
-    document.getElementById("mileage").value.trim();
-
-  const fuel =
-    document.getElementById("fuel").value;
-
-  const transmission =
-    document.getElementById("transmission").value;
-
-  const adUrl =
-    document.getElementById("adUrl").value.trim();
-
-
-  if (
-    !brand ||
-    !model ||
-    !year ||
-    !price ||
-    !mileage ||
-    !fuel ||
-    !transmission
-  ) {
-
-    showError(t.errorRequired);
-
+  if (!regNr) {
+    alert(t.alertReg);
     return;
   }
 
-
-  submitButton.disabled = true;
-
-  loading.classList.add("show");
-
-  resultCard.style.display = "none";
-
-  result.className = "result";
-
-  result.textContent = "";
-
-
-  const carData = {
-
-    brand: brand,
-
-    model: model,
-
-    year: Number(year),
-
-    price: Number(price),
-
-    mileage: Number(mileage),
-
-    fuel: fuel,
-
-    transmission: transmission,
-
-    adUrl: adUrl,
-
-    language: lang
-
-  };
-
+  searchBtn.disabled = true;
+  searchBtn.innerText = t.btnAnalyzing;
+  resultBox.style.display = 'block';
+  output.innerText = t.loading;
 
   try {
-
-    const response = await fetch("/api/check-car", {
-
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify(carData)
-
+    const response = await fetch('/api/check-car', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ regNr, adUrl, language })
     });
 
+    const data = await response.json();
 
-    const responseText = await response.text();
-
-
-    let data;
-
-
-    try {
-
-      data = JSON.parse(responseText);
-
-    } catch (jsonError) {
-
-      console.error(
-        "Server response:",
-        responseText
-      );
-
-      throw new Error(
-        `${t.errorServer} (${response.status}): ${responseText.substring(0, 500)}`
-      );
-
+    if (response.ok) {
+      output.innerHTML = data.report.replace(/\n/g, '<br>');
+    } else {
+      output.innerText = 'Error: ' + (data.error || 'Failed to generate report.');
     }
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        `${t.errorServer} (${response.status})`
-      );
-
-    }
-
-
-    if (!data.report) {
-
-      console.error(
-        "Invalid API response:",
-        data
-      );
-
-      throw new Error(
-        "Servern returnerade inget analysresultat."
-      );
-
-    }
-
-
-    result.textContent = data.report;
-
-    result.className = "result success";
-
-    resultCard.style.display = "block";
-
-
-    resultCard.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-
-  } catch (error) {
-
-    console.error("Request error:", error);
-
-    showError(
-      error.message ||
-      t.errorGeneric
-    );
-
+  } catch (err) {
+    output.innerText = 'Connection error. Please try again.';
   } finally {
-
-    submitButton.disabled = false;
-
-    loading.classList.remove("show");
-
+    searchBtn.disabled = false;
+    searchBtn.innerText = t.btnSearch;
   }
-
-});
-
-
-function showError(message) {
-
-  resultCard.style.display = "block";
-
-  result.className = "result error";
-
-  result.textContent = message;
-
-  resultCard.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-
 }
-
-
-setLanguage("sv");
