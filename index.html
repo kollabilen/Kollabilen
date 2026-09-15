@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv" dir="ltr">
+<html lang="sv" dir="ltr" id="html-root">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,6 +43,7 @@
       letter-spacing: 2px;
       margin-bottom: 10px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      text-transform: uppercase;
     }
     .plate-badge .s-flag {
       background: #0052b4;
@@ -86,8 +87,10 @@
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 119, 255, 0.3);
+      transition: background 0.2s ease;
     }
-    button:disabled { opacity: 0.6; }
+    button:hover { background: #005bb5; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     .badge-info {
       text-align: center;
       background: rgba(255, 255, 255, 0.05);
@@ -98,7 +101,11 @@
       margin-bottom: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    #result-box { display: none; line-height: 1.6; }
+    #result-box { 
+      display: none; 
+      line-height: 1.6; 
+      border-left: 4px solid var(--accent-color);
+    }
     .disclaimer {
       font-size: 11px;
       color: var(--text-muted);
@@ -113,22 +120,22 @@
       margin-top: 25px;
       opacity: 0.7;
     }
-    .footer-credit strong {
-      color: #ffffff;
-    }
+    .footer-credit strong { color: #ffffff; }
+    #output strong { color: #60a5fa; }
+    #output ul { padding-left: 20px; margin: 10px 0; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="plate-badge"><span class="s-flag">S</span> ABC 123</div>
+      <div class="plate-badge"><span class="s-flag">S</span> <span id="badge-text">ABC 123</span></div>
       <h1>kollabilen.se</h1>
       <p class="subtitle" id="ui-subtitle">Sök på registreringsnummer och få en direkt AI-analys inför ditt bilköp.</p>
     </div>
 
     <div class="card">
       <label id="ui-lbl-reg">Registreringsnummer</label>
-      <input type="text" id="regNr" placeholder="t.ex. ABC 123" maxlength="10">
+      <input type="text" id="regNr" placeholder="t.ex. ABC 123" maxlength="10" oninput="updateBadgeText(this.value)">
 
       <label id="ui-lbl-url">Länk till annons (Valfritt - Blocket / Riddermark)</label>
       <input type="url" id="adUrl" placeholder="Klistra in länk här...">
