@@ -1,399 +1,166 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>KollaBilen.se – AI bilanalys</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kollabilen.se - AI-driven bilrapport</title>
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --card-bg: rgba(28, 37, 65, 0.88);
+      --accent-color: #0077ff;
+      --text-color: #ffffff;
+      --text-muted: #a0aec0;
     }
-
     body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, rgba(11, 19, 43, 0.85) 0%, rgba(11, 19, 43, 0.95) 100%), 
+                  url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
+      color: var(--text-color);
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #172033;
-    }
-
-    .container {
-      width: 92%;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e9f0;
-      padding: 22px 0;
-    }
-
-    .header-inner {
+      padding: 20px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
     }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      color: #1264d8;
+    .container {
+      width: 100%;
+      max-width: 500px;
     }
-
-    .subtitle {
-      color: #667085;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    select {
-      padding: 10px 12px;
-      border: 1px solid #d5dbe5;
-      border-radius: 8px;
-      background: white;
-      font-size: 14px;
-    }
-
-    main {
-      padding: 45px 0 70px;
-    }
-
-    .hero {
+    .header {
       text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: 38px;
-    }
-
-    .hero p {
-      color: #667085;
-      font-size: 17px;
-      line-height: 1.6;
-      margin: 0 auto;
-      max-width: 650px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 8px 30px rgba(20, 40, 80, 0.08);
       margin-bottom: 25px;
     }
-
-    .card h2 {
-      margin-top: 0;
-      margin-bottom: 22px;
+    .plate-badge {
+      display: inline-flex;
+      align-items: center;
+      background: white;
+      color: black;
+      font-weight: bold;
       font-size: 22px;
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: 2px solid #333;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 17px;
+    .plate-badge .s-flag {
+      background: #0052b4;
+      color: #ffda44;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 2px;
+      margin-right: 8px;
     }
-
-    .field {
-      display: flex;
-      flex-direction: column;
+    h1 { font-size: 26px; margin: 5px 0; font-weight: 800; letter-spacing: -0.5px; }
+    p.subtitle { color: var(--text-muted); font-size: 14px; margin-top: 0; }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      font-weight: 600;
-      margin-bottom: 7px;
-      font-size: 14px;
-    }
-
-    input,
-    .field select {
+    label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    input, select {
       width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #d5dbe5;
-      border-radius: 9px;
-      font-size: 15px;
-      outline: none;
-      background: #fff;
-    }
-
-    input:focus,
-    .field select:focus {
-      border-color: #1264d8;
-      box-shadow: 0 0 0 3px rgba(18, 100, 216, 0.1);
-    }
-
-    .button {
-      width: 100%;
-      border: 0;
-      border-radius: 10px;
-      background: #1264d8;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #3a506b;
+      background: rgba(11, 19, 43, 0.9);
       color: white;
-      padding: 15px;
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      margin-top: 22px;
+      box-shadow: 0 4px 12px rgba(0, 119, 255, 0.3);
     }
-
-    .button:hover {
-      background: #0d55b9;
-    }
-
-    .button:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-    }
-
-    .result {
-      display: none;
-      white-space: pre-wrap;
-      line-height: 1.7;
-      font-size: 15px;
-    }
-
-    .result.error {
-      display: block;
-      color: #b42318;
-      background: #fff1f0;
-      border: 1px solid #f5c2c0;
-      border-radius: 10px;
-      padding: 16px;
-    }
-
-    .result.success {
-      display: block;
-    }
-
-    .loading {
-      display: none;
+    button:disabled { opacity: 0.6; }
+    .badge-info {
       text-align: center;
-      padding: 20px;
-      color: #667085;
-    }
-
-    .loading.show {
-      display: block;
-    }
-
-    .hint {
-      color: #667085;
-      font-size: 12px;
-      margin-top: 6px;
-    }
-
-    footer {
-      text-align: center;
-      color: #667085;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+      padding: 10px;
+      border-radius: 8px;
       font-size: 13px;
-      padding: 25px 0 40px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-
-    @media (max-width: 650px) {
-      .header-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .hero h1 {
-        font-size: 30px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
-
-      .card {
-        padding: 20px;
-      }
+    #result-box { display: none; line-height: 1.6; }
+    .disclaimer {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 15px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .footer-credit {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 25px;
+      opacity: 0.7;
+    }
+    .footer-credit strong {
+      color: #ffffff;
     }
   </style>
 </head>
-
 <body>
+  <div class="container">
+    <div class="header">
+      <div class="plate-badge"><span class="s-flag">S</span> ABC 123</div>
+      <h1>kollabilen.se</h1>
+      <p class="subtitle" id="ui-subtitle">Sök på registreringsnummer och få en direkt AI-analys inför ditt bilköp.</p>
+    </div>
 
-  <header>
-    <div class="container header-inner">
-      <div>
-        <div class="logo">KollaBilen.se</div>
-        <div class="subtitle" id="headerSubtitle">
-          AI-analys innan du köper bilen
-        </div>
-      </div>
+    <div class="card">
+      <label id="ui-lbl-reg">Registreringsnummer</label>
+      <input type="text" id="regNr" placeholder="t.ex. ABC 123" maxlength="10">
 
-      <select id="language">
-        <option value="sv">Svenska</option>
-        <option value="ar">العربية</option>
-        <option value="en">English</option>
+      <label id="ui-lbl-url">Länk till annons (Valfritt - Blocket / Riddermark)</label>
+      <input type="url" id="adUrl" placeholder="Klistra in länk här...">
+
+      <label id="ui-lbl-lang">Välj språk för rapporten</label>
+      <select id="language" onchange="changeUiLanguage()">
+        <option value="Svenska" selected>Svenska</option>
+        <option value="Arabiska">العربية</option>
+        <option value="Engelska">English</option>
       </select>
+
+      <button id="searchBtn" onclick="analyzeCar()">Kolla Bilen</button>
     </div>
-  </header>
 
-  <main>
-    <div class="container">
-
-      <section class="hero">
-        <h1 id="title">Kolla bilen innan du köper</h1>
-
-        <p id="description">
-          Fyll i information om bilen och få en AI-baserad analys av
-          vanliga problem, pris, risker, underhåll och vad du bör kontrollera.
-        </p>
-      </section>
-
-      <section class="card">
-
-        <h2 id="formTitle">Bilens information</h2>
-
-        <form id="carForm">
-
-          <div class="form-grid">
-
-            <div class="field">
-              <label for="brand" id="brandLabel">Märke</label>
-              <input
-                id="brand"
-                type="text"
-                placeholder="Ex. BMW"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="model" id="modelLabel">Modell</label>
-              <input
-                id="model"
-                type="text"
-                placeholder="Ex. 320d"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="year" id="yearLabel">Årsmodell</label>
-              <input
-                id="year"
-                type="number"
-                min="1950"
-                max="2030"
-                placeholder="Ex. 2018"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="price" id="priceLabel">Pris</label>
-              <input
-                id="price"
-                type="number"
-                min="0"
-                placeholder="Ex. 149000"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="mileage" id="mileageLabel">Miltal</label>
-              <input
-                id="mileage"
-                type="number"
-                min="0"
-                placeholder="Ex. 12500"
-                required
-              />
-
-              <div class="hint" id="mileageHint">
-                Ange mil, inte kilometer.
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="fuel" id="fuelLabel">Bränsle</label>
-
-              <select id="fuel" required>
-                <option value="">Välj</option>
-                <option value="Bensin">Bensin</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Hybrid">Hybrid</option>
-                <option value="Laddhybrid">Laddhybrid</option>
-                <option value="El">El</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="transmission" id="transmissionLabel">
-                Växellåda
-              </label>
-
-              <select id="transmission" required>
-                <option value="">Välj</option>
-                <option value="Manuell">Manuell</option>
-                <option value="Automat">Automat</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="adUrl" id="adUrlLabel">
-                Annonslänk
-              </label>
-
-              <input
-                id="adUrl"
-                type="url"
-                placeholder="https://www.blocket.se/..."
-              />
-
-              <div class="hint" id="adUrlHint">
-                Valfritt.
-              </div>
-            </div>
-
-          </div>
-
-          <button class="button" id="submitButton" type="submit">
-            Analysera bilen
-          </button>
-
-        </form>
-
-      </section>
-
-      <div class="loading" id="loading">
-        <div id="loadingText">
-          Analyserar bilen...
-        </div>
-      </div>
-
-      <section class="card" id="resultCard" style="display:none;">
-
-        <h2 id="resultTitle">
-          Bilanalys
-        </h2>
-
-        <div id="result" class="result"></div>
-
-      </section>
-
+    <div class="badge-info" id="ui-badge-info">
+      Hämta bilrapport - Helt utan registrering eller inloggning
     </div>
-  </main>
 
-  <footer>
-    KollaBilen.se
-  </footer>
+    <p class="disclaimer" id="ui-disclaimer">
+      * Ansvarsfriskrivning: Denna tjänst erbjuder AI-genererad rådgivning baserad på tillgänglig data och ersätter inte en manuell mekanisk besiktning. Inga personuppgifter lagras eller visas.
+    </p>
+
+    <div class="card" id="result-box">
+      <h3 id="ui-report-title">Fordonsrapport</h3>
+      <div id="output"></div>
+    </div>
+
+    <p class="footer-credit" id="ui-footer">
+      Utvecklad av <strong>Marven</strong> | kollabilen.se
+    </p>
+  </div>
 
   <script src="app.js"></script>
-
 </body>
 </html>
