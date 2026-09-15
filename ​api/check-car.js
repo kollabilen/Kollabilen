@@ -13,25 +13,26 @@ export default async function handler(req, res) {
   const selectedLang = language || 'Svenska';
 
   try {
-    // 1. Hämtar fordonsdata från öppna databaser
+    // 1. جلب بيانات السيارة المتاحة
     let rawCarData = null;
     try {
-      const carDataRes = await fetch(`https://regcheck.org.uk/api/reg.json/${cleanReg}`, {
+      const regCheckUser = process.env.REGCHECK_USERNAME || 'demo';
+      const carDataRes = await fetch(`https://regcheck.org.uk/api/reg.json/${cleanReg}/${regCheckUser}`, {
         headers: { 'User-Agent': 'KollaBilen/1.0' }
       });
       if (carDataRes.ok) {
         rawCarData = await carDataRes.json();
       }
     } catch (e) {
-      console.log('Ingen direkt databasträff, använder AI-analys.');
+      console.log('Ingen databasträff, använder AI-analys.');
     }
 
-    // 2. Hämtar annonsinnehåll via Jina Reader om länk finns
+    // 2. قراءة رابط Blocket عبر Jina Reader
     let adContent = '';
     if (adUrl) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
 
         const jinaRes = await fetch(`https://r.jina.ai/${adUrl}`, {
           signal: controller.signal,
@@ -48,28 +49,34 @@ export default async function handler(req, res) {
       }
     }
 
-    // 3. Systeminstruktioner för OpenAI baserat på valt språk
+    // 3. توجيهات الذكاء الاصطناعي
     const systemInstruction = `
-Du är en professionell bilexpert för kollabilen.se.
+Du är en professionell och erfaren bilexpert för kollabilen.se i Sverige.
 Generera hela rapporten på följande språk: ${selectedLang}.
 
 VIKTIGA REGLER OCH JURIDISK SÄKERHET:
-1. Visa ALDRIG personnamn eller personnummer. Om data innehåller namn, ignorera det helt.
-2. Om annonsinnehåll finns, analysera det angivna priset i förhållande till bilens skick och marknadsvärde.
-3. Fokusera på bilens tekniska specifikationer, kända modellproblem, besiktningspunkter, uppskattade ägandekostnader och köpråd.
+1. Visa ALDRIG personnamn, personnummer eller adresser.
+2. Använd tydliga rubriker (exempelvis ## Specifikationer, ## Modellfel, ## Köpråd).
+3. Om annonsinnehåll finns, analysera det angivna priset i förhållande till skick och mätarställning.
+4. Fokusera på:
+   - Tekniska specifikationer (motor, drivmedel, växellåda)
+   - Kända modellproblem och vanliga fel för denna bilmodell
+   - Besiktningspunkter att kontrollera vid provkörning
+   - Ägandekostnader (skatt, förbrukning)
+   - Slutgiltigt köpråd / Betyg (1-5)
 `;
 
     const userPrompt = `
 Registreringsnummer: ${cleanReg}
-Språk: ${selectedLang}
+Målspråk: ${selectedLang}
 ${adUrl ? 'Annonslänk: ' + adUrl : ''}
-${adContent ? 'Läst annonsinnehåll: ' + adContent : ''}
+${adContent ? 'Läst annonsinnehåll från Blocket/Riddermark: ' + adContent : ''}
 ${rawCarData ? 'Hämtad fordonsdata: ' + JSON.stringify(rawCarData) : ''}
 
-Skapa en komplett bilrapport för köparen på ${selectedLang}.
+Skapa en komplett, strukturerad och pedagogisk bilrapport för köparen på ${selectedLang}.
 `;
 
-    // 4. Anrop till OpenAI GPT-4o-mini
+    // 4. الاتصال بـ OpenAI API
     const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -82,7 +89,7 @@ Skapa en komplett bilrapport för köparen på ${selectedLang}.
           { role: 'system', content: systemInstruction },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.5
+        temperature: 0.4
       })
     });
 
