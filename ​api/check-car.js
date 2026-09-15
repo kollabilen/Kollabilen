@@ -1,311 +1,101 @@
 export default async function handler(req, res) {
-
-  // Only POST requests are allowed
-  if (req.method !== "POST") {
-
-    return res.status(405).json({
-      error: "Method not allowed"
-    });
-
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Metod tillåts inte' });
   }
 
+  const { regNr, adUrl, language } = req.body;
 
-  // Check API key
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-
-    console.error(
-      "OPENAI_API_KEY is missing."
-    );
-
-    return res.status(500).json({
-      error:
-        "OPENAI_API_KEY saknas i Vercel Environment Variables."
-    });
-
+  if (!regNr) {
+    return res.status(400).json({ error: 'Registreringsnummer krävs' });
   }
 
+  const cleanReg = regNr.replace(/\s+/g, '').toUpperCase();
+  const selectedLang = language || 'Svenska';
 
   try {
-
-    const body = req.body || {};
-
-
-    const {
-      brand,
-      model,
-      year,
-      price,
-      mileage,
-      fuel,
-      transmission,
-      adUrl,
-      language
-    } = body;
-
-
-    // Validate required fields
-    if (
-      !brand ||
-      !model ||
-      !year ||
-      !price ||
-      mileage === undefined ||
-      mileage === null ||
-      !fuel ||
-      !transmission
-    ) {
-
-      return res.status(400).json({
-        error:
-          "Alla obligatoriska biluppgifter måste fyllas i."
+    // 1. Hämtar fordonsdata från öppna databaser
+    let rawCarData = null;
+    try {
+      const carDataRes = await fetch(`https://regcheck.org.uk/api/reg.json/${cleanReg}`, {
+        headers: { 'User-Agent': 'KollaBilen/1.0' }
       });
-
+      if (carDataRes.ok) {
+        rawCarData = await carDataRes.json();
+      }
+    } catch (e) {
+      console.log('Ingen direkt databasträff, använder AI-analys.');
     }
 
+    // 2. Hämtar annonsinnehåll via Jina Reader om länk finns
+    let adContent = '';
+    if (adUrl) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-    let outputLanguage = "Swedish";
+        const jinaRes = await fetch(`https://r.jina.ai/${adUrl}`, {
+          signal: controller.signal,
+          headers: { 'User-Agent': 'KollaBilen/1.0' }
+        });
+        clearTimeout(timeoutId);
 
-
-    if (language === "ar") {
-      outputLanguage = "Arabic";
+        if (jinaRes.ok) {
+          const fullText = await jinaRes.text();
+          adContent = fullText.substring(0, 2000);
+        }
+      } catch (e) {
+        console.log('Kunde inte läsa annonslänk.');
+      }
     }
 
-    if (language === "en") {
-      outputLanguage = "English";
-    }
+    // 3. Systeminstruktioner för OpenAI baserat på valt språk
+    const systemInstruction = `
+Du är en professionell bilexpert för kollabilen.se.
+Generera hela rapporten på följande språk: ${selectedLang}.
 
-
-    const adInformation =
-      adUrl && adUrl.trim()
-        ? `
-Annonslänk:
-${adUrl}
-
-Observera: länken är endast extra information. Bedöm inte innehållet på sidan som om du faktiskt har läst den om den inte är tillgänglig.
-`
-        : "Ingen annonslänk angavs.";
-
-
-    const prompt = `Du är en erfaren bilexpert som hjälper en person att avgöra om en begagnad bil är värd att köpa.
-
-Analysera bilen utifrån informationen nedan.
-
-BILINFORMATION:
-
-Märke: ${brand}
-Modell: ${model}
-Årsmodell: ${year}
-Pris: ${price} SEK
-Miltal: ${mileage} mil
-Bränsle: ${fuel}
-Växellåda: ${transmission}
-
-${adInformation}
-
-VIKTIGT:
-
-- Var realistisk.
-- Hitta inte på specifika fel på just detta exemplar.
-- Förklara vanliga problem som kan förekomma på denna modell/motor/växellåda.
-- Om information saknas, säg tydligt att den saknas.
-- Gör ingen falsk garanti om bilens skick.
-- Priset ska bedömas ungefärligt utifrån bilens ålder, miltal och specifikation.
-- Förklara vilka saker köparen bör kontrollera före köp.
-- Lyft fram dyra potentiella reparationer.
-- Nämn viktiga servicepunkter.
-- Om bilen har diesel, bensin, hybrid eller eldrift: ta hänsyn till typiska problem för drivlinan.
-- Ta hänsyn till automatisk eller manuell växellåda.
-- Ge ett tydligt slutomdöme.
-
-SVARA PÅ ${outputLanguage}.
-
-Använd denna struktur:
-
-1. SNABB BEDÖMNING
-Ge en kort sammanfattning.
-
-2. ÄR PRISET RIMLIGT?
-Bedöm priset och förklara varför.
-
-3. VANLIGA PROBLEM
-Lista de viktigaste problemen som kan förekomma på denna bilmodell/drivlina.
-
-4. DYRA RISKER
-Vilka fel kan bli dyra att reparera?
-
-5. SERVICE OCH UNDERHÅLL
-Vad bör köparen kontrollera kring service och underhåll?
-
-6. VAD SKA JAG KONTROLLERA?
-Ge en praktisk checklista inför provkörning och köp.
-
-7. KÖP ELLER AVSTÅ?
-Ge ett tydligt råd baserat på den information som finns.
-
-8. SLUTBETYG
-Ge ett betyg från 1 till 10 och förklara kort varför.
+VIKTIGA REGLER OCH JURIDISK SÄKERHET:
+1. Visa ALDRIG personnamn eller personnummer. Om data innehåller namn, ignorera det helt.
+2. Om annonsinnehåll finns, analysera det angivna priset i förhållande till bilens skick och marknadsvärde.
+3. Fokusera på bilens tekniska specifikationer, kända modellproblem, besiktningspunkter, uppskattade ägandekostnader och köpråd.
 `;
 
+    const userPrompt = `
+Registreringsnummer: ${cleanReg}
+Språk: ${selectedLang}
+${adUrl ? 'Annonslänk: ' + adUrl : ''}
+${adContent ? 'Läst annonsinnehåll: ' + adContent : ''}
+${rawCarData ? 'Hämtad fordonsdata: ' + JSON.stringify(rawCarData) : ''}
 
-    const openAIResponse = await fetch(
-      "https://api.openai.com/v1/responses",
-      {
-        method: "POST",
+Skapa en komplett bilrapport för köparen på ${selectedLang}.
+`;
 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-
-        body: JSON.stringify({
-
-          model: "gpt-5.6-luna",
-
-          instructions:
-            "Du är en noggrann och realistisk expert på begagnade bilar. Ge praktiska råd och var tydlig med osäkerheter.",
-
-          input: prompt,
-
-          max_output_tokens: 2500
-
-        })
-      }
-    );
-
-
-    const openAIText =
-      await openAIResponse.text();
-
-
-    let openAIData;
-
-
-    try {
-
-      openAIData =
-        JSON.parse(openAIText);
-
-    } catch (parseError) {
-
-      console.error(
-        "OpenAI returned invalid JSON:",
-        openAIText
-      );
-
-      return res.status(502).json({
-        error:
-          "OpenAI returnerade ett ogiltigt svar."
-      });
-
-    }
-
-
-    if (!openAIResponse.ok) {
-
-      console.error(
-        "OpenAI API error:",
-        openAIData
-      );
-
-      const apiError =
-        openAIData?.error?.message ||
-        "OpenAI API error.";
-
-      return res.status(
-        openAIResponse.status
-      ).json({
-        error: apiError
-      });
-
-    }
-
-
-    // The Responses API normally provides output_text
-    let report =
-      openAIData.output_text;
-
-
-    // Fallback if output_text is not available
-    if (!report && Array.isArray(openAIData.output)) {
-
-      const textParts = [];
-
-
-      for (
-        const outputItem
-        of openAIData.output
-      ) {
-
-        if (
-          Array.isArray(
-            outputItem.content
-          )
-        ) {
-
-          for (
-            const contentItem
-            of outputItem.content
-          ) {
-
-            if (
-              contentItem.type === "output_text" &&
-              contentItem.text
-            ) {
-
-              textParts.push(
-                contentItem.text
-              );
-
-            }
-
-          }
-
-        }
-
-      }
-
-
-      report =
-        textParts.join("\n\n");
-
-    }
-
-
-    if (!report) {
-
-      console.error(
-        "OpenAI response did not contain text:",
-        openAIData
-      );
-
-      return res.status(502).json({
-        error:
-          "AI:n returnerade inget analysresultat."
-      });
-
-    }
-
-
-    return res.status(200).json({
-      report: report
+    // 4. Anrop till OpenAI GPT-4o-mini
+    const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemInstruction },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.5
+      })
     });
 
+    const aiData = await openAiRes.json();
+
+    if (!openAiRes.ok) {
+      return res.status(500).json({ error: aiData.error?.message || 'AI-systemfel' });
+    }
+
+    const report = aiData.choices[0].message.content;
+    return res.status(200).json({ report });
 
   } catch (error) {
-
-    console.error(
-      "Server error:",
-      error
-    );
-
-
-    return res.status(500).json({
-      error:
-        "Ett internt serverfel uppstod."
-    });
-
+    return res.status(500).json({ error: 'Internt serverfel: ' + error.message });
   }
-
 }
