@@ -52,6 +52,13 @@ const translations = {
   }
 };
 
+function updateBadgeText(val) {
+  const badge = document.getElementById('badge-text');
+  if (badge) {
+    badge.innerText = val.trim() ? val.toUpperCase() : 'ABC 123';
+  }
+}
+
 function changeUiLanguage() {
   const lang = document.getElementById('language').value;
   const t = translations[lang] || translations.Svenska;
@@ -68,6 +75,16 @@ function changeUiLanguage() {
   document.getElementById('ui-disclaimer').innerText = t.disclaimer;
   document.getElementById('ui-report-title').innerText = t.reportTitle;
   document.getElementById('ui-footer').innerHTML = t.footer;
+}
+
+function formatMarkdown(text) {
+  return text
+    .replace(/^### (.*$)/gim, '<h4 style="color:#60a5fa; margin-top:15px; margin-bottom:5px;">$1</h4>')
+    .replace(/^## (.*$)/gim, '<h3 style="color:#0077ff; margin-top:20px; margin-bottom:8px;">$1</h3>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/^\- (.*$)/gim, '• $1')
+    .replace(/\n/g, '<br>');
 }
 
 async function analyzeCar() {
@@ -91,7 +108,7 @@ async function analyzeCar() {
   searchBtn.disabled = true;
   searchBtn.innerText = t.btnAnalyzing;
   resultBox.style.display = 'block';
-  output.innerText = t.loading;
+  output.innerHTML = `<em>${t.loading}</em>`;
 
   try {
     const response = await fetch('/api/check-car', {
@@ -103,7 +120,7 @@ async function analyzeCar() {
     const data = await response.json();
 
     if (response.ok) {
-      output.innerHTML = data.report.replace(/\n/g, '<br>');
+      output.innerHTML = formatMarkdown(data.report);
     } else {
       output.innerText = 'Error: ' + (data.error || 'Failed to generate report.');
     }
